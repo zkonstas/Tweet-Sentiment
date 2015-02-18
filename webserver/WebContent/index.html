@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html>
-  
+
   <head>
     <link rel="stylesheet" type="text/css" href="styles/appstyle.css">
     <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="scripts/googlemaps.js"></script>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=<api-key>libraries=visualization&sensor=true_or_false">
+      src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false">
     </script>
   </head>
-  
+
   <body>
 
     <div id="keyword panel">
       <p>
-        Select a keyword: 
-        
+        Pick a view:
         <select id="selector">
-          <option value="facebook">Facebook</option>
-          <option value="ebola">Ebola</option>
-          <option value="obama">Obama</option>
-          <option value="isis">Isis</option>
-          <option value="halloween">Halloween</option>
-          <option value="hollywood">Hollywood</option>
+          <option value="tweets">Tweets</option>
+          <option value="heatmap">Sentiment</option>
         </select>
       </p>
     </div>

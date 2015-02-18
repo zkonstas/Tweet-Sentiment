@@ -3,54 +3,68 @@ import java.net.URL;
 import java.util.*;
 import java.util.logging.*;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletConfig;
 
-import com.amazonaws.services.sns.model.*;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.Connection;
+
 /**
- * Servlet implementation class SentSNSServlet
+ * Servlet implementation class SNSServlet
  */
-public class SentSNSServlet extends HttpServlet {
+public class SNSServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	private static final Logger log = Logger.getLogger( SentSNSServlet.class.getName() );
-       
-	public void init(ServletConfig config) throws ServletException {
-		System.out.println("hello from init");
-	}
-	
+	Connection conn = null;
+	private static final Logger log = Logger.getLogger( SNSServlet.class.getName() );
+
     /**
-     * @see HttpServlet#HttpServlet()
+     * Default constructor. 
      */
-    public SentSNSServlet() {
-        super();
+    public SNSServlet() {
         // TODO Auto-generated constructor stub
     }
+
+	/**
+	 * @see Servlet#init(ServletConfig)
+	 */
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+		
+		try {
+			conn = DriverManager.getConnection("*.amazonaws.com:3306/TwitterDB?user=*&password=*");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		
-		System.out.println("get!!");
+		System.out.println("hello");
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		System.out.println("post!!");
+System.out.println("post!!");
 		
 		//Get the message type header.
 				String messagetype = request.getHeader("x-amz-sns-message-type");
@@ -77,6 +91,11 @@ public class SentSNSServlet extends HttpServlet {
 					if (msg.getSubject() != null)
 						logMsgAndSubject += " Subject: " + msg.getSubject();
 					logMsgAndSubject += " Message: " + msg.getMessage();
+					String message = msg.getMessage();
+					System.out.println("Web server got message!:");
+					System.out.println(message);
+					saveSentiment(message);
+					
 					log.info(logMsgAndSubject);
 				}
 		    else if (messagetype.equals("SubscriptionConfirmation"))
@@ -93,6 +112,7 @@ public class SentSNSServlet extends HttpServlet {
 		       }
 		       log.info(">>Subscription confirmation (" + msg.getSubscribeURL() +") Return value: " + sb.toString());
 		       //TODO: Process the return value to ensure the endpoint is subscribed.
+		       sc.close();
 				}
 		    else if (messagetype.equals("UnsubscribeConfirmation")) {
 		      //TODO: Handle UnsubscribeConfirmation message. 
@@ -106,69 +126,10 @@ public class SentSNSServlet extends HttpServlet {
 		      log.info(">>Unknown message type.");
 		    }
 				log.info(">>Done processing message: " + msg.getMessageId());
-		}
-
-//	private byte[] getMessageBytesToSign(SNSMessage msg) {
-//
-//		byte [] bytesToSign = null;
-//		if (msg.getType().equals("Notification"))
-//			bytesToSign = buildNotificationStringToSign(msg).getBytes();
-//		else if (msg.getType().equals("SubscriptionConfirmation") || msg.getType().equals("UnsubscribeConfirmation"))
-//			bytesToSign = buildSubscriptionStringToSign(msg).getBytes();
-//		return bytesToSign;
-//	}
-//
-//	//Build the string to sign for Notification messages.
-//	private static String buildNotificationStringToSign( SNSMessage msg) {
-//		String stringToSign = null;
-//
-//		//Build the string to sign from the values in the message.
-//		//Name and values separated by newline characters
-//		//The name value pairs are sorted by name 
-//		//in byte sort order.
-//		stringToSign = "Message\n";
-//		stringToSign += msg.getMessage() + "\n";
-//		stringToSign += "MessageId\n";
-//		stringToSign += msg.getMessageId() + "\n";
-//		if (msg.getSubject() != null) {
-//			stringToSign += "Subject\n";
-//			stringToSign += msg.getSubject() + "\n";
-//		}
-//		stringToSign += "Timestamp\n";
-//		stringToSign += msg.getTimestamp() + "\n";
-//		stringToSign += "TopicArn\n";
-//		stringToSign += msg.getTopicArn() + "\n";
-//		stringToSign += "Type\n";
-//		stringToSign += msg.getType() + "\n";
-//		return stringToSign;
-//	}
-//
-//	//Build the string to sign for SubscriptionConfirmation 
-//	//and UnsubscribeConfirmation messages.
-//	private static String buildSubscriptionStringToSign(SNSMessage msg) {
-//		String stringToSign = null;
-//		//Build the string to sign from the values in the message.
-//		//Name and values separated by newline characters
-//		//The name value pairs are sorted by name 
-//		//in byte sort order.
-//		stringToSign = "Message\n";
-//		stringToSign += msg.getMessage() + "\n";
-//		stringToSign += "MessageId\n";
-//		stringToSign += msg.getMessageId() + "\n";
-//		stringToSign += "SubscribeURL\n";
-//		stringToSign += msg.getSubscribeURL() + "\n";
-//		stringToSign += "Timestamp\n";
-//		stringToSign += msg.getTimestamp() + "\n";
-//		stringToSign += "Token\n";
-//		stringToSign += msg.getToken() + "\n";
-//		stringToSign += "TopicArn\n";
-//		stringToSign += msg.getTopicArn() + "\n";
-//		stringToSign += "Type\n";
-//		stringToSign += msg.getType() + "\n";
-//		return stringToSign;
-//	}
-//
-//
+				
+		scan.close();
+	}
+	
 	private SNSMessage readMessageFromJson(String string) {
 		ObjectMapper mapper = new ObjectMapper(); 
 		SNSMessage message = null;
@@ -187,24 +148,39 @@ public class SentSNSServlet extends HttpServlet {
 		
 		return message;
 	}
-//	
-//	private TranscoderMessage readTransMesFromJson(String mes) {
-//		ObjectMapper mapper = new ObjectMapper(); 
-//		TranscoderMessage message = null;
-//		try {
-//			message = mapper.readValue(mes, TranscoderMessage.class);
-//		} catch (JsonParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		return message;
-//	}
 	
+	private int saveSentiment(String message) {
+		
+		String id = message.split("_")[0];
+		String sentiment = message.split("_")[1];
+		
+		
+//		Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+		// Open new connection.
+		
+		/* To connect to the database, you need to use a JDBC url with the following 
+		   format ([xxx] denotes optional url components):
+		   jdbc:mysql://[hostname][:port]/[dbname][?param1=value1][&param2=value2]... 
+		   By default MySQL's hostname is "localhost." The database used here is 
+		   called "mydb" and MySQL's default user is "root". If we had a database 
+		   password we would add "&password=xxx" to the end of the url.
+		*/
+		
+		try {
+			Statement sqlStatement = conn.createStatement();
+
+			// Generate the SQL query.
+			String query = "UPDATE tweets SET sentiment=\""+sentiment+"\" WHERE tweet_id=\""+id+"\"";
+
+			// Get the query results and display them.
+			int result = sqlStatement.executeUpdate(query);
+			log.info("Result from saving sentiment is"+result);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
+
+}

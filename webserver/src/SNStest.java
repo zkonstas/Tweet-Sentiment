@@ -16,29 +16,40 @@ public class SNStest {
 		AmazonSNSClient snsClient = new AmazonSNSClient(new ClasspathPropertiesFileCredentialsProvider());		                           
 		snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
 
+		
+		
 		//create a new SNS topic
-		CreateTopicRequest createTopicRequest = new CreateTopicRequest("Sentiments2");
-		CreateTopicResult createTopicResult = snsClient.createTopic(createTopicRequest);
+//		CreateTopicRequest createTopicRequest = new CreateTopicRequest("Sentiments6");
+//		CreateTopicResult createTopicResult = snsClient.createTopic(createTopicRequest);
 		//print TopicArn
-		System.out.println(createTopicResult);
+//		System.out.println(createTopicResult);
 		//get request id for CreateTopicRequest from SNS metadata		
-		System.out.println("CreateTopicRequest - " + snsClient.getCachedResponseMetadata(createTopicRequest));
+//		System.out.println("CreateTopicRequest - " + snsClient.getCachedResponseMetadata(createTopicRequest));
 		
-		String topicArn = "<TOPIC-NAME>";
+		String topicArn = "*:Sentiments6";
 		
-		//subscribe to an SNS topic
-		SubscribeRequest subRequest = new SubscribeRequest(topicArn, "http", "<SENTIMENT-SNS-SERVLET>");
+		sendMessage(topicArn, snsClient);
+		
+		//
+		
+
+	}
+	
+	private static void sendMessage(String topicArn, AmazonSNSClient snsClient) {
+		
+//		subscribe to an SNS topic
+		SubscribeRequest subRequest = new SubscribeRequest(topicArn, "http", "*/SNSServlet");
 		snsClient.subscribe(subRequest);
 //		//get request id for SubscribeRequest from SNS metadata
 		System.out.println("SubscribeRequest - " + snsClient.getCachedResponseMetadata(subRequest));
 		
 		//publish to an SNS topic
-		String msg = "This is a test";
+
 		PublishRequest publishRequest = new PublishRequest(topicArn, msg);
 		PublishResult publishResult = snsClient.publish(publishRequest);
 		//print MessageId of message published to SNS topic
 		System.out.println("MessageId - " + publishResult.getMessageId());
-
+		
 	}
 
 }

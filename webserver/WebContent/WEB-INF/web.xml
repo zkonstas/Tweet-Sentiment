@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-  <display-name>TweetSentiment</display-name>
+  <display-name>TweetMaps</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
@@ -11,12 +11,22 @@
   </welcome-file-list>
   <servlet>
     <description></description>
-    <display-name>SentSNSServlet</display-name>
-    <servlet-name>SentSNSServlet</servlet-name>
-    <servlet-class>SentSNSServlet</servlet-class>
+    <display-name>SNSServlet</display-name>
+    <servlet-name>SNSServlet</servlet-name>
+    <servlet-class>SNSServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SentSNSServlet</servlet-name>
-    <url-pattern>/SentSNSServlet</url-pattern>
+    <servlet-name>SNSServlet</servlet-name>
+    <url-pattern>/SNSServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SQSServlet</display-name>
+    <servlet-name>SQSServlet</servlet-name>
+    <servlet-class>SQSServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SQSServlet</servlet-name>
+    <url-pattern>/SQSServlet</url-pattern>
   </servlet-mapping>
 </web-app>

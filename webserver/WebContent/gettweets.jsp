@@ -8,17 +8,11 @@
 
 <%! @SuppressWarnings("unchecked") %>
 <%
-String keyword;
 String id;
 String coordinates;
+String sentiment;
 Double lon;
 Double lat;
-
-//get the keyword
-System.out.println("jsp file running");
-keyword = request.getParameter("keyword");
-System.out.println("here"+keyword);
-
 
 // This is needed to use Connector/J. It basically creates a new instance
 // of the Connector/J jdbc driver.
@@ -34,11 +28,11 @@ java.sql.Connection conn;
    password we would add "&password=xxx" to the end of the url.
 */
 
-conn = DriverManager.getConnection("<db-url>");
+conn = DriverManager.getConnection("*.rds.amazonaws.com:3306/TwitterDB?user=*&password=*");
 Statement sqlStatement = conn.createStatement();
 
 // Generate the SQL query.
-String query = "SELECT * FROM "+keyword;
+String query = "SELECT * FROM tweets WHERE sentiment!='NULL'";
 
 // Get the query results and display them.
 ResultSet sqlResult = sqlStatement.executeQuery(query);
@@ -48,6 +42,7 @@ JSONArray data = new JSONArray();
 while(sqlResult.next()) {
 	id = sqlResult.getString("tweet_id");
 	coordinates = sqlResult.getString("coordinates");
+	sentiment = sqlResult.getString("sentiment");
 	lon = Double.valueOf(coordinates.split(",")[0]);
 	lat = Double.valueOf(coordinates.split(",")[1]);
 	
@@ -56,6 +51,7 @@ while(sqlResult.next()) {
 	tweet.put("id", id);
 	tweet.put("lon", lon);
 	tweet.put("lat", lat);
+	tweet.put("sent", sentiment);
 	
 	data.add(tweet);
 }
