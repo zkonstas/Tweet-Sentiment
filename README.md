@@ -1,5 +1,6 @@
 # Tweet-Sentiment
 Sentiment and location visualization of Twitter data
+
 ![screencast](images/screencast.gif)
 
 ## Overview
@@ -7,7 +8,6 @@ This web application displays a sentiment and location visualization of tweets r
 
 The application uses Amazon AWS to perform several tasks and has been developed mainly as a demo for various services of Amazon AWS for the class COMS 6998 - Cloud Computing and Big Data taught at Columbia University in the Fall 2014.
 
-## Description
 The application uses the following AWS services:
 - Elastic Beanstalk
 - Load Balancing
@@ -16,10 +16,12 @@ The application uses the following AWS services:
 - SNS
 - RDS Database
 
-The architecture of the application on the server is displayed on the picture below:
+The architecture of the application on the server is displayed on below:
+
 ![architecture](images/architecture.png)
 
-## Application Deployment
+## Description
+### Application Deployment
 The application is deployed very efficiently using AWS Elastic Beanstalk. Through this service EC2 Web-Server instances can be easily set up and created automatically. The web-application is easily deployed and updated again through Elastic Beanstalk. Also, the load balancing option is selected so that load balancing can be managed automatically by AWS.
 
 ## Client-Side
