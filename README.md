@@ -16,7 +16,7 @@ The application uses the following AWS services:
 - SNS
 - RDS Database
 
-The architecture of the application on the server is displayed on below:
+The architecture of the application on the server is displayed below:
 
 ![architecture](images/architecture.png)
 
