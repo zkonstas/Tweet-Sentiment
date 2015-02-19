@@ -9,8 +9,8 @@ This web application displays a sentiment and location visualization of tweets r
 The application uses Amazon AWS to perform several tasks and has been developed mainly as a demo for various services of Amazon AWS for the class COMS 6998 - Cloud Computing and Big Data taught at Columbia University in the Fall 2014.
 
 The application uses the following AWS services:
-- Elastic Beanstalk
-- Load Balancing
+- Elastic Beanstalk (EBS)
+- Elastic Load Balancing (ELB)
 - EC2
 - SQS
 - SNS
